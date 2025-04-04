@@ -10,10 +10,15 @@ user_question = st.text_input("Your question", placeholder="e.g. How do I report
 if user_question:
     with st.spinner("Finding an answer..."):
         response = get_civic_answer(user_question)
-        st.markdown("### 🧠 Answer")
-        st.write(response["answer"])
 
+    st.markdown("### 🧠 Answer")
+    st.write(response["answer"])
+
+    if response["sources"]:
         st.markdown("---")
-        st.markdown("### 📄 Sources")
+        st.markdown("### 🔗 Sources consulted")
         for i, source in enumerate(response["sources"], 1):
-            st.markdown(f"**{i}.** {source}")
+            st.markdown(f"**{i}.** [{source}]({source})")
+    else:
+        st.info("No sources found for this response.")
+

@@ -21,5 +21,5 @@ qa_chain = RetrievalQA.from_chain_type(
 def get_civic_answer(question: str):
     result = qa_chain(question)
     answer = result["result"]
-    sources = [doc.metadata.get("source", "Unknown") for doc in result["source_documents"]]
+    sources = list(set(doc.metadata.get("source", "Unknown") for doc in result["source_documents"]))
     return {"answer": answer, "sources": sources}

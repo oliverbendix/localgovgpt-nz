@@ -5,3 +5,6 @@ openai
 python-dotenv
 faiss-cpu
 tiktoken
+requests
+beautifulsoup4
+trafilatura
