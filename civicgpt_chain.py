@@ -3,7 +3,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
-from utils.load_documents import load_and_embed_docs
+from utilities.load_documents import load_and_embed_docs
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
