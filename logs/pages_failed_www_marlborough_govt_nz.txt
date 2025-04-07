@@ -1,4 +1,0 @@
-https://www.marlborough.govt.nz/rss/sportsground  # no_extract
-https://www.marlborough.govt.nz/rss/combined-mdc-news-notices-and-media-releases  # no_extract
-https://www.marlborough.govt.nz/rss/public-notices  # no_extract
-https://www.marlborough.govt.nz/rss/fire-alerts  # no_extract

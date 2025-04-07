@@ -1,2 +1,0 @@
-https://bullerdc.govt.nz/blog/news/rss/  # no_extract
-https://bullerdc.govt.nz/blog/rss/  # no_extract
