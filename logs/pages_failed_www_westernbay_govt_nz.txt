@@ -1,0 +1,14 @@
+https://www.westernbay.govt.nz/property-rates-and-building/district-plan-and-resource-consents/district-plan/district-plan-changes-unactive  # no_html
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/property-rates-building/development-engineering/2025%20Development%20Code%20Update/W600%20-%20Wastewater.pdf  # empty_pdf
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/property-rates-building/development-engineering/2025%20Development%20Code%20Update/W800%20-%20Streetlighting.pdf  # empty_pdf
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/property-rates-building/development-engineering/2025%20Development%20Code%20Update/W400%20-%20Transportation.pdf  # empty_pdf
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/community/civil-defence-emergency/publishingimages/Tsunami%20Evacuation%20Zone%20Omokoroa.pdf  # empty_pdf
+https://www.westernbay.govt.nz/community/events/markets  # no_html
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/property-rates-building/development-engineering/2025%20Development%20Code%20Update/As%20Built_Aspatial%20Template%20-%20July%202019.xlsx  # no_html
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/community/civil-defence-emergency/publishingimages/Tsunami%20Evacuation%20Zone%20Otamarakau.pdf  # empty_pdf
+https://www.westernbay.govt.nz/property-rates-and-building/district-plan-and-resource-consents/district-plan/fees-and-charges  # no_html
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/community/civil-defence-emergency/publishingimages/Tsunami%20Evacuation%20Zone%20Woodlands.pdf  # empty_pdf
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/property-rates-building/district-plan/operative-plan-2002/documents/OP%202002%20-%20Legend.pdf  # empty_pdf
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/council/about-the-council/documents/2020%20Documents%20for%20Council%20Website/Elected-Members-Code-of-Conduct-2019-Adopted-C01  # no_html
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/community/civil-defence-emergency/publishingimages/Tsunami%20Evacuation%20Zone%20Te%20Tumu.pdf  # empty_pdf
+https://www.westernbay.govt.nz/repository/libraries/id:25p4fe6mo17q9stw0v5w/hierarchy/community/civil-defence-emergency/publishingimages/Tsunami%20Evacuation%20Zone%20Tahawai%20Kauri%20Point.pdf  # empty_pdf

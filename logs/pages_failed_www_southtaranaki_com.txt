@@ -1,0 +1,8 @@
+https://www.southtaranaki.com/ics/events?e=id:2tjyax3lh1cxbyd1p1ug&ref=2025-04-14T22:00:00Z  # no_extract
+https://www.southtaranaki.com/repository/libraries/id:27mlbegko1cxbyf94es5/hierarchy/Documents/Governance/Pecuniary%20and%20Other%20Specified%20Interests%20of%20Elected%20Members%202023  # no_html
+https://www.southtaranaki.com/repository/libraries/id:27mlbegko1cxbyf94es5/hierarchy/Documents/Plans%2C%20strategies%20and%20reports/Dog%20Control%20Policy%20and%20Practices/Annual%20Dog%20Control%20Report%202021-22  # no_html
+https://www.southtaranaki.com/repository/libraries/id:27mlbegko1cxbyf94es5/hierarchy/Documents/Plans%2C%20strategies%20and%20reports/Collaborating%20for%20Active%20Spaces%20Taranaki%202023  # no_html
+https://www.southtaranaki.com/ics/events?e=id:2tatema9v17q9saa91vv&ref=2025-04-15T03:30:00Z  # no_extract
+https://www.southtaranaki.com/repository/libraries/id:27mlbegko1cxbyf94es5/hierarchy/Documents/Plans%2C%20strategies%20and%20reports/Dog%20Control%20Policy%20and%20Practices/Annual%20Dog%20Control%20Report%202020%202021.pdf  # empty_pdf
+https://www.southtaranaki.com/ics/events?e=id:2tasta4fl17q9sumsgmd&ref=2025-04-12T02:00:00Z  # no_extract
+https://www.southtaranaki.com/repository/libraries/id:27mlbegko1cxbyf94es5/hierarchy/Documents/Governance/Pecuniary%20and%20Other%20Specified%20Interests%20of%20Elected%20Members%202024  # no_html

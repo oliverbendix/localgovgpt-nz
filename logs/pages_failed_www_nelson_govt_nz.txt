@@ -1,0 +1,5 @@
+https://www.nelson.govt.nz/assets/Building-Planning/Downloads/property-and-land-use/development-contributions/Development-Contributions-Policy-2021-Final.pdf  # empty_pdf
+https://www.nelson.govt.nz/online-payments/  # no_extract
+https://www.nelson.govt.nz/environment/kotahitanga-mo-te-taiao/  # no_html
+https://www.nelson.govt.nz/repository/libraries/id:2r883m1me1cxbyryo0mp/hierarchy/1Your%20Council/A-Z%20Plans%2C%20Policies%2C%20Strategies/Resource%20Management%20Plans/Design%20guides%20for%20heritage%20precincts/South%20Street%20Heritage%20Precinct%20Design%20Guide  # no_html
+https://www.nelson.govt.nz/repository/libraries/id:2r883m1me1cxbyryo0mp/hierarchy/5Community/Recreation/Parks%20and%20Open%20Spaces/Parks%20and%20Reserve/See%20Tahunanui%20Open%20Spaces/Tahunanui%20Beach%20Foreshore%20and%20Tahunanui%20Recreation%20Reserve/Tahunanui-Management-Areas-and-Activity-Zones-Figure-3.pdf  # empty_pdf
