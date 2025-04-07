@@ -12,18 +12,23 @@ import requests
 from lxml import etree
 from bs4 import BeautifulSoup
 import fitz  # PyMuPDF
+import time 
 
 VECTOR_STORE_PATH = "data/vector_store"
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
 DELAY_BETWEEN_REQUESTS = 2  # seconds
+MAX_SITEMAPURLS = 200
+MIN_SITEMAP_URLS = 30
+MAX_PAGES = 200
+MAX_SEEDS = 100
 
-HEADERS = {
+HEADERS = { 
     "User-Agent": "LocalGovGPT-Crawler/1.0 (contact)"
 }
 
 
-def parse_sitemap(url, max_urls=100):
+def parse_sitemap(url, max_urls=MAX_SITEMAPURLS):
     headers = {"User-Agent": "LocalGovGPT-Crawler/1.0"}
     try:
         response = requests.get(url, headers=headers, timeout=10)
@@ -95,7 +100,7 @@ async def fetch(session, url):
         print(f"Error fetching {url}: {e}")
     return None
 
-def get_seed_urls_from_homepage(home_url, max_seeds=20):
+def get_seed_urls_from_homepage(home_url, max_seeds=MAX_SEEDS):
     print(f"[🌱] Extracting seed URLs from: {home_url}")
     headers = {"User-Agent": "LocalGovGPT-Crawler/1.0"}
     try:
@@ -218,7 +223,7 @@ async def crawl_site(start_url, max_pages, min_sitemap_urls):
 
 def embed_and_save(pages, batch_size=100):
     print("[🔢] Preparing documents for embedding...")
-    documents = [Document(page_content=text, metadata={"source": url}) for url, text in pages]
+    documents = [Document(page_content=text, metadata={"source": url, "domain": get_domain_root(url)}) for url, text in pages]
 
     splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=50)
     split_docs = splitter.split_documents(documents)
@@ -226,7 +231,18 @@ def embed_and_save(pages, batch_size=100):
     embeddings = OpenAIEmbeddings()
 
     print("[💾] Saving vector store...")
-    vectordb = FAISS.from_documents(split_docs, embeddings)
+    # Process documents in batches to avoid memory issues with large datasets
+    vectordb = None
+    for i in range(0, len(split_docs), batch_size):
+        batch = split_docs[i:i + batch_size]
+        if vectordb is None:
+            vectordb = FAISS.from_documents(batch, embeddings)
+        else:
+            try:
+                vectordb.add_documents(batch)
+            except Exception as e:
+                print(f"[❌] Failed embedding batch {i}-{i+batch_size}: {e}")
+    
     vectordb.save_local("data/vector_store")
 
     print("[✅] Done.")
@@ -265,18 +281,37 @@ def save_failed_log(failed_urls, base_url):
 
     print(f"[🧾] Saved failed crawl log: {filename}")
 
-
 async def main():
-    all_pages = []
+    start = time.time()
     site_list = load_site_list()
+    semaphore = asyncio.Semaphore(10)  # limit to 10 concurrent crawls
 
-    for site in site_list:
-        pages = await crawl_site(site, max_pages=100, min_sitemap_urls=50)
-        all_pages.extend(pages)
-        #save_crawl_log(pages, site)
+    async def crawl_with_limit(site):
+        async with semaphore:
+            return {
+                "site": site,
+                "pages": await crawl_site(site, max_pages=MAX_PAGES, min_sitemap_urls=MIN_SITEMAP_URLS)
+            }
 
+    print(f"[🚀] Crawling {len(site_list)} sites in parallel with max 10 at a time...")
+    crawl_start = time.time()
+
+    tasks = [crawl_with_limit(site) for site in site_list]
+    results = await asyncio.gather(*tasks)
+
+    crawl_end = time.time()
+    print(f"\n⏱️ Crawling time: {crawl_end - crawl_start:.2f} seconds")
+
+    all_pages = []
+    for result in results:
+        all_pages.extend(result["pages"])
+
+    embed_start = time.time()
     embed_and_save(all_pages)
+    embed_end = time.time()
+    print(f"⏱️ Embedding time: {embed_end - embed_start:.2f} seconds")
 
+    print(f"\n✅ Total runtime: {time.time() - start:.2f} seconds")
 
 if __name__ == "__main__":
     asyncio.run(main())
