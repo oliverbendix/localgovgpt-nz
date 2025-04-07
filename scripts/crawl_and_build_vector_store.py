@@ -224,26 +224,11 @@ def embed_and_save(pages, batch_size=100):
     split_docs = splitter.split_documents(documents)
 
     embeddings = OpenAIEmbeddings()
-    all_vectors = []
-    all_metas = []
-
-    print(f"[🧠] Embedding {len(split_docs)} chunks in batches of {batch_size}...")
-
-    for i in tqdm(range(0, len(split_docs), batch_size)):
-        batch = split_docs[i:i+batch_size]
-        texts = [doc.page_content for doc in batch]
-        metas = [doc.metadata for doc in batch]
-
-        try:
-            vectors = embeddings.embed_documents(texts)
-            all_vectors.extend(vectors)
-            all_metas.extend(metas)
-        except Exception as e:
-            print(f"[!] Failed embedding batch {i}-{i+batch_size}: {e}")
 
     print("[💾] Saving vector store...")
-    vectordb = FAISS.from_embeddings(all_vectors, all_metas, embeddings)
+    vectordb = FAISS.from_documents(split_docs, embeddings)
     vectordb.save_local("data/vector_store")
+
     print("[✅] Done.")
 
 
