@@ -1,0 +1,23 @@
+# Ignore vector store data and logs
+data/
+logs/
+
+# But keep tracked metadata like a council list if needed
+!data/council_metadata.csv
+
+# Python environment and build artifacts
+.venv/
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+
+# VSCode and IDE settings
+.vscode/
+.idea/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
