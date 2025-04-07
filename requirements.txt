@@ -8,4 +8,5 @@ tiktoken
 requests
 beautifulsoup4
 trafilatura
-
+lxml
+pymupdf
