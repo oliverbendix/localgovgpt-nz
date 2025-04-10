@@ -1,9 +1,7 @@
 import os
 from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
-from utilities.load_documents import load_and_embed_docs
 import os
 from pinecone import Pinecone
 from langchain_community.embeddings import OpenAIEmbeddings
