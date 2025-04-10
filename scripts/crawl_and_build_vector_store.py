@@ -24,9 +24,9 @@ VECTOR_STORE_PATH = "data/vector_store"
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
 DELAY_BETWEEN_REQUESTS = 2  # seconds
-MAX_SITEMAPURLS = 20
-MIN_SITEMAP_URLS = 30
-MAX_PAGES = 10
+MAX_SITEMAPURLS = 500
+MIN_SITEMAP_URLS = 100
+MAX_PAGES = 500
 MAX_SEEDS = 100
 
 HEADERS = { 
@@ -341,6 +341,10 @@ def save_failed_log(failed_urls, base_url):
 async def main():
     start = time.time()
     site_list = load_site_list()
+
+    summary_log = []
+    start_time = datetime.utcnow()
+
     semaphore = asyncio.Semaphore(10)  # limit to 10 concurrent crawls
 
     async def crawl_with_limit(site):
@@ -361,7 +365,23 @@ async def main():
 
     all_pages = []
     for result in results:
-        all_pages.extend(result["pages"])
+        site = result["site"]
+        pages = result["pages"]
+        all_pages.extend(pages)
+
+        council_id = get_council_id(site)
+        failed_log_path = f"logs/pages_failed_{council_id}.txt"
+        failed_count = 0
+
+        if os.path.exists(failed_log_path):
+            with open(failed_log_path, "r") as f:
+                failed_count = sum(1 for _ in f)
+
+        summary_log.append({
+            "council": site,
+            "success": len(pages),
+            "failed": failed_count
+        })
 
     embed_start = time.time()
     embed_and_save(all_pages)
@@ -369,6 +389,30 @@ async def main():
     print(f"⏱️ Embedding time: {embed_end - embed_start:.2f} seconds")
 
     print(f"\n✅ Total runtime: {time.time() - start:.2f} seconds")
+    end_time = datetime.utcnow()
+    duration = (end_time - start_time).total_seconds()
+    log_path = "logs/crawl_summary.txt"
+
+    with open(log_path, "w") as f:
+        f.write(f"LocalGovGPT Crawl Summary ({start_time.isoformat()}Z)\n")
+        f.write("=" * 60 + "\n")
+        total_success = total_failed = 0
+
+        for entry in summary_log:
+            f.write(f"{entry['council']}\n")
+            f.write(f"  ✅ Pages scraped: {entry['success']}\n")
+            f.write(f"  ⚠️  Failed pages : {entry['failed']}\n")
+            f.write("-" * 40 + "\n")
+            total_success += entry["success"]
+            total_failed += entry["failed"]
+
+        f.write("\n📊 Totals:\n")
+        f.write(f"  ✅ Total scraped: {total_success}\n")
+        f.write(f"  ⚠️  Total failed : {total_failed}\n")
+        f.write(f"  ⏱️  Duration     : {duration:.2f} seconds\n")
+
+    print(f"\n[📋] Crawl complete. Summary saved to {log_path}")
+
 
 if __name__ == "__main__":
     asyncio.run(main())
