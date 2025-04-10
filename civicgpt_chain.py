@@ -10,24 +10,8 @@ from langchain_community.embeddings import OpenAIEmbeddings
 from openai import OpenAI
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
-# Load civic docs and build vector DB (temporary in memory for now)
-retriever = load_and_embed_docs()
-
-llm = ChatOpenAI(temperature=0, openai_api_key=OPENAI_API_KEY)
-
-qa_chain = RetrievalQA.from_chain_type(
-    llm=llm,
-    retriever=retriever,
-    return_source_documents=True
-)
-
-def get_civic_answer_old(question: str):
-    result = qa_chain(question)
-    answer = result["result"]
-    sources = list(set(doc.metadata.get("source", "Unknown") for doc in result["source_documents"]))
-    return {"answer": answer, "sources": sources}
-
+if not OPENAI_API_KEY:
+    raise ValueError("Please set the OPENAI_API_KEY environment variable.")
 
 def get_civic_answer(question, top_k=5):
     embeddings = OpenAIEmbeddings()
