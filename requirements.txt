@@ -2,11 +2,11 @@ streamlit
 langchain
 langchain-community
 openai
-python-dotenv
-faiss-cpu
 tiktoken
 requests
 beautifulsoup4
 trafilatura
 lxml
 pymupdf
+pinecone
+python-dotenv

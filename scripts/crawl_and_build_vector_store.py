@@ -3,9 +3,7 @@ import asyncio
 import aiohttp
 import trafilatura
 from urllib.parse import urlparse, urljoin
-from langchain.vectorstores import FAISS
 from langchain.docstore.document import Document
-from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import TokenTextSplitter
 from tqdm import tqdm
 import requests
@@ -13,14 +11,22 @@ from lxml import etree
 from bs4 import BeautifulSoup
 import fitz  # PyMuPDF
 import time 
+from pinecone import Pinecone, ServerlessSpec
+import pickle
+from langchain_community.embeddings import OpenAIEmbeddings
+import uuid
+from pinecone import Pinecone, ServerlessSpec
+import re
+from datetime import datetime
+
 
 VECTOR_STORE_PATH = "data/vector_store"
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
 DELAY_BETWEEN_REQUESTS = 2  # seconds
-MAX_SITEMAPURLS = 200
+MAX_SITEMAPURLS = 20
 MIN_SITEMAP_URLS = 30
-MAX_PAGES = 200
+MAX_PAGES = 10
 MAX_SEEDS = 100
 
 HEADERS = { 
@@ -149,12 +155,34 @@ def extract_text_from_pdf(url):
         print(f"[!] Failed to extract PDF: {url} — {e}")
         return None
 
+def get_council_id(url):
+    domain = urlparse(url).netloc
+    return domain.replace(".", "_")
+
+def save_clean_text(url, text, council_id):
+    os.makedirs(f"data/fetched/{council_id}", exist_ok=True)
+
+    slug = re.sub(r"[^\w\-]+", "_", urlparse(url).path.strip("/"))[:60]
+    if not slug:
+        slug = "homepage"
+
+    timestamp = datetime.utcnow().isoformat()
+    filename = f"data/fetched/{council_id}/{slug}.txt"
+
+    with open(filename, "w") as f:
+        f.write(f"source: {url}\n")
+        f.write(f"scraped_at: {timestamp}Z\n\n")
+        f.write(text.strip())
+
+    print(f"[💾] Saved: {filename}")
+
 
 async def crawl_site(start_url, max_pages, min_sitemap_urls):
     visited = set()
     texts = []
     failed = []
 
+    council_id = get_council_id(start_url)
     root_domain = get_domain_root(start_url)
     sitemap_url = urljoin(root_domain, "/sitemap.xml")
 
@@ -197,6 +225,7 @@ async def crawl_site(start_url, max_pages, min_sitemap_urls):
                 print(f"[⚠️] Failed to extract content from: {url}")
                 failed.append((url, "no_extract"))
             else:
+                save_clean_text(url, text, council_id)  # 🆕 save during crawl
                 texts.append((url, text))
 
             visited.add(url)
@@ -218,34 +247,62 @@ async def crawl_site(start_url, max_pages, min_sitemap_urls):
     print(f"[✅] Finished crawling {start_url}. {len(texts)} pages extracted, {len(failed)} failed.")
     return texts
 
-
-
+def save_documents(docs, path="data/split_docs.pkl"):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "wb") as f:
+        pickle.dump(docs, f)
+    print(f"[💾] Saved {len(docs)} split documents to {path}")
 
 def embed_and_save(pages, batch_size=100):
     print("[🔢] Preparing documents for embedding...")
-    documents = [Document(page_content=text, metadata={"source": url, "domain": get_domain_root(url)}) for url, text in pages]
+
+    documents = [Document(page_content=text, metadata={"source": url}) for url, text in pages]
 
     splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=50)
     split_docs = splitter.split_documents(documents)
 
-    embeddings = OpenAIEmbeddings()
+    # Save locally for future reuse
+    os.makedirs("data", exist_ok=True)
+    with open("data/split_docs.pkl", "wb") as f:
+        pickle.dump(split_docs, f)
+    print(f"[💾] Saved {len(split_docs)} split documents.")
 
-    print("[💾] Saving vector store...")
-    # Process documents in batches to avoid memory issues with large datasets
-    vectordb = None
-    for i in range(0, len(split_docs), batch_size):
-        batch = split_docs[i:i + batch_size]
-        if vectordb is None:
-            vectordb = FAISS.from_documents(batch, embeddings)
-        else:
-            try:
-                vectordb.add_documents(batch)
-            except Exception as e:
-                print(f"[❌] Failed embedding batch {i}-{i+batch_size}: {e}")
-    
-    vectordb.save_local("data/vector_store")
+    # Embed
+    embeddings_model = OpenAIEmbeddings()
+    texts = [doc.page_content for doc in split_docs]
+    metadatas = [doc.metadata for doc in split_docs]
 
-    print("[✅] Done.")
+    print("[🧠] Generating embeddings...")
+    embeddings = embeddings_model.embed_documents(texts)
+
+    # Set up Pinecone
+    pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+    index_name = "localgovgpt"
+
+    if index_name not in pc.list_indexes().names():
+        pc.create_index(
+            name=index_name,
+            dimension=1536,
+            metric="cosine",
+            spec=ServerlessSpec(cloud="aws", region="us-east-1")
+        )
+
+    index = pc.Index(index_name)
+
+    # Prepare and upsert in batches
+    print("[📤] Uploading to Pinecone...")
+    for i in range(0, len(embeddings), batch_size):
+        batch = [
+            (
+                str(uuid.uuid4()),  # unique ID
+                embeddings[i],
+                metadatas[i]
+            )
+            for i in range(i, min(i + batch_size, len(embeddings)))
+        ]
+        index.upsert(vectors=batch)
+
+    print(f"[✅] Uploaded {len(embeddings)} vectors to Pinecone.")
 
 
 
