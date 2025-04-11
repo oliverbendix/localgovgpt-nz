@@ -30,9 +30,9 @@ with st.container():
         **LocalGovGPT NZ** is a personal project built by [Oliver Thompson](mailto:oliverthompsoncv@gmail.com) 
         to explore the use of LLMs and Retrieval-Augmented Generation (RAG) in the public sector.
 
-        It scrapes and indexes 78 New Zealand local council websites to help answer questions about local government services and policies.
+        It scrapes and indexes 78 New Zealand local council websites to help answer questions about local government services and policies. It's not completely reliable! Some of the older webpages that turned up in the scrape are out of date, and I'll be working on curating that database.
 
-        I built this because I'm keen to see AI adopted responsibly and safely in Aotearoa, and I think using tools is the best way to really understand them.
+        I built this for my own education and as a demo. I'm keen to see AI adopted responsibly and safely in Aotearoa, and I think using tools is the best way to really understand them.
 
         If you're looking for an information, data and AI leader in 2026, please check out my other app [Oliver's CV Chatbot](https://cv-chatbot-oliverbendixthompson.streamlit.app) and feel free to get in touch!
 
