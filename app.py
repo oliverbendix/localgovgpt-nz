@@ -26,16 +26,20 @@ st.markdown("---")
 with st.container():
     st.markdown("### 👨‍💻 About this app")
     st.info(
-        """
+"""
         **LocalGovGPT NZ** is a personal project built by [Oliver Thompson](mailto:oliverthompsoncv@gmail.com) 
         to explore the use of LLMs and Retrieval-Augmented Generation (RAG) in the public sector.
 
-        It scrapes and indexes all 78 New Zealand local council websites to help answer 
+        It scrapes and indexes 78 New Zealand local council websites to help answer 
         questions about local government services and policies.
 
-        I built this because I'm keen to see AI adopted responsbily and safely in the public sector, and I think
+        I built this because I'm keen to see AI adopted responsibly and safely in the public sector, and I think
         using tools is the best way to really understand them.
 
-        If you're looking for an AI leader in 2026, please check out my other app [Oliver's CV Chatbot](https://cv-chatbot-oliverbendixthompson.streamlit.app) and feel free to get in touch!
+        If you're looking for an AI leader in 2026, please check out my other app 
+        [Oliver's CV Chatbot](https://cv-chatbot-oliverbendixthompson.streamlit.app) and feel free to get in touch!
+
+        **Tech stack:** This app is built using Python, Streamlit, LangChain, OpenAI, and Pinecone. 
+        It uses async crawling, PDF/text parsing, and vector embeddings to power a lightweight civic LLM interface.
         """
     )
